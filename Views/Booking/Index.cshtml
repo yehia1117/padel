@@ -1,0 +1,11 @@
+@model List<DateTime>
+@{ ViewData["Title"] = "حجز ملعب"; var booked = (List<DateTime>)ViewBag.Booked; var selectedDate = DateTime.Parse((string)ViewBag.Date); }
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3"><div><h2 class="fw-bold mb-1">احجز ملعبك</h2><p class="text-secondary mb-0">اختار يوم وميعاد لمدة ساعة</p></div><a asp-action="MyBookings" class="btn btn-outline-secondary">حجوزاتي</a></div>
+<form method="get" class="date-picker-card mb-4"><label class="form-label fw-semibold">تاريخ الحجز</label><div class="d-flex gap-2"><input type="date" name="date" value="@ViewBag.Date" min="@DateTime.Today.ToString("yyyy-MM-dd")" max="@DateTime.Today.AddDays(30).ToString("yyyy-MM-dd")" class="form-control"/><button class="btn btn-green">عرض المواعيد</button></div></form>
+<div class="slot-grid">
+@foreach(var slot in Model){ var isBooked = booked.Contains(slot); var past = slot <= DateTime.Now; var label = slot.ToString("h:mm tt", CultureInfo.InvariantCulture).Replace("AM","ص").Replace("PM","م");
+<div class="slot-card @(isBooked ? "slot-booked" : past ? "slot-past" : "slot-free")"><div class="slot-time">@label</div><div class="small mb-2">إلى @slot.AddHours(1).ToString("h:mm tt", CultureInfo.InvariantCulture).Replace("AM","ص").Replace("PM","م")</div>
+@if(isBooked){<span class="badge text-bg-secondary">محجوز / انتظار</span>} else if(past){<span class="badge text-bg-light">انتهى</span>} else {<form asp-action="Create" method="post"><input type="hidden" name="startDateTime" value="@slot.ToString("yyyy-MM-ddTHH:mm:ss")"/><button class="btn btn-green w-100" type="submit">اطلب الحجز</button></form>}
+</div>}
+</div>
+<div class="legend mt-3"><span><i class="dot dot-green"></i> متاح</span><span><i class="dot dot-gray"></i> محجوز</span></div>

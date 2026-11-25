@@ -1,0 +1,8 @@
+bin/
+obj/
+.vs/
+*.user
+*.suo
+padel.db
+padel.db-shm
+padel.db-wal

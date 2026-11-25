@@ -1,0 +1,8 @@
+@model List<Booking>
+@{ ViewData["Title"] = "حجوزاتي"; }
+<h2 class="fw-bold mb-3">حجوزاتي</h2>
+@if(!Model.Any()){<div class="empty-card text-center py-5"><div class="display-6">🎾</div><p class="mb-2">لسه مفيش حجوزات</p><a class="btn btn-green" asp-action="Index">احجز أول ميعاد</a></div>}
+else {<div class="table-responsive"><table class="table align-middle booking-table"><thead><tr><th>اليوم</th><th>الميعاد</th><th>الحالة</th><th>ملاحظات الإدارة</th><th></th></tr></thead><tbody>
+@foreach(var b in Model){<tr><td>@b.StartDateTime.ToString("dd/MM/yyyy")</td><td>@b.StartDateTime.ToString("h:mm tt").Replace("AM","ص").Replace("PM","م") – @b.EndDateTime.ToString("h:mm tt").Replace("AM","ص").Replace("PM","م")</td><td><span class="status status-@b.Status">@BookingStatusText(b.Status)</span></td><td>@b.AdminNotes</td><td>@if(b.Status=="Pending" && b.StartDateTime>DateTime.Now){<form asp-action="Cancel" method="post"><input type="hidden" name="id" value="@b.Id"/><button class="btn btn-sm btn-outline-danger">إلغاء</button></form>}</td></tr>}
+</tbody></table></div>}
+@functions { string BookingStatusText(string s) => s switch { "Pending"=>"في انتظار التأكيد", "Confirmed"=>"مؤكد", "Rejected"=>"مرفوض", "Cancelled"=>"ملغي", _=>s}; }

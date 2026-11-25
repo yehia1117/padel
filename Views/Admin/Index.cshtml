@@ -1,0 +1,11 @@
+@model List<Booking>
+@{ ViewData["Title"] = "لوحة الإدارة"; }
+<h2 class="fw-bold mb-3">لوحة إدارة الحجوزات</h2>
+<div class="row g-3 mb-4"><div class="col-md-6"><div class="stat-card"><div class="text-secondary">طلبات في انتظار التأكيد</div><div class="stat-number">@ViewBag.PendingCount</div></div></div><div class="col-md-6"><div class="stat-card"><div class="text-secondary">حجوزات اليوم (غير الملغاة)</div><div class="stat-number">@ViewBag.TodayCount</div></div></div></div>
+<form method="get" class="date-picker-card mb-3"><label class="form-label">عرض حجوزات يوم</label><div class="d-flex gap-2"><input type="date" name="date" value="@ViewBag.Date" class="form-control"/><button class="btn btn-green">عرض</button></div></form>
+@if(!Model.Any()){<div class="empty-card text-center p-4">لا توجد حجوزات في هذا اليوم.</div>}else{
+<div class="table-responsive"><table class="table align-middle booking-table"><thead><tr><th>الميعاد</th><th>العميل</th><th>رقم التليفون</th><th>الحالة</th><th>إجراء</th></tr></thead><tbody>
+@foreach(var b in Model){<tr><td class="fw-semibold">@b.StartDateTime.ToString("h:mm tt").Replace("AM","ص").Replace("PM","م") – @b.EndDateTime.ToString("h:mm tt").Replace("AM","ص").Replace("PM","م")</td><td>@b.User?.Name</td><td dir="ltr">@b.User?.Phone</td><td><span class="status status-@b.Status">@(b.Status switch { "Pending"=>"منتظر", "Confirmed"=>"مؤكد", "Rejected"=>"مرفوض", "Cancelled"=>"ملغي", _=>b.Status })</span></td><td>
+@if(b.Status=="Pending") { <div class="d-flex gap-1"><form asp-action="UpdateStatus" method="post"><input type="hidden" name="id" value="@b.Id"/><input type="hidden" name="status" value="Confirmed"/><button class="btn btn-sm btn-success">تأكيد</button></form><form asp-action="UpdateStatus" method="post"><input type="hidden" name="id" value="@b.Id"/><input type="hidden" name="status" value="Rejected"/><button class="btn btn-sm btn-outline-danger">رفض</button></form></div> } else if(b.Status=="Confirmed" && b.StartDateTime>DateTime.Now){<form asp-action="UpdateStatus" method="post"><input type="hidden" name="id" value="@b.Id"/><input type="hidden" name="status" value="Cancelled"/><button class="btn btn-sm btn-outline-danger">إلغاء</button></form>}
+</td></tr>}
+</tbody></table></div>}

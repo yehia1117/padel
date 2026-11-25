@@ -1,0 +1,8 @@
+@model RegisterViewModel
+@{ ViewData["Title"] = "حساب جديد"; }
+<div class="auth-card mx-auto"><h2 class="fw-bold mb-1">إنشاء حساب</h2><p class="text-secondary">سجّل بياناتك علشان تحجز الملعب</p>
+<form asp-action="Register" method="post"><div asp-validation-summary="ModelOnly" class="text-danger"></div>
+<div class="mb-3"><label asp-for="Name" class="form-label">الاسم</label><input asp-for="Name" class="form-control" placeholder="اسمك"/><span asp-validation-for="Name" class="text-danger"></span></div>
+<div class="mb-3"><label asp-for="Phone" class="form-label">رقم الموبايل</label><input asp-for="Phone" class="form-control" placeholder="01xxxxxxxxx"/><span asp-validation-for="Phone" class="text-danger"></span></div>
+<div class="mb-3"><label asp-for="Password" class="form-label">كلمة المرور</label><input asp-for="Password" type="password" class="form-control"/><span asp-validation-for="Password" class="text-danger"></span></div>
+<button class="btn btn-green w-100 btn-lg">إنشاء الحساب</button></form><p class="mt-3 mb-0">عندك حساب؟ <a asp-action="Login">سجّل دخول</a></p></div>
